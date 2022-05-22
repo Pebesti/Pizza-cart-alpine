@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfect Pizza</title>
+    <link rel="stylesheet" href="./css/simple-grid.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js" defer></script>
+</head>
+
+<body>
+    <h1 class="center">Perfect Pizza</h1>
+    <div x-data="{
+        small_pizza_counter:0,
+        medium_pizza_counter :0,
+        large_pizza_counter:0,
+        total:0,
+        paid:false,
+        isCheckout:false,
+        payAmount:0,
+        addSmallPizza()
+        {
+            this.small_pizza_counter += 1;
+            this.paid = false;
+        },
+        addMediumPizza()
+        {
+            this.medium_pizza_counter += 1;
+            this.paid = false;
+        },
+        addLargePizza()
+        {
+            this.large_pizza_counter += 1;
+            this.paid = false;
+        },
+
+        removeSmallPizza()
+        {
+            this.small_pizza_counter -=  (this.small_pizza_counter > 0) ? 1 : 0;
+            this.paid = false;
+        },
+        removeMediumPizza()
+        {
+            this.medium_pizza_counter -=  (this.medium_pizza_counter > 0) ? 1 : 0;
+            this.paid = false;
+        },
+        removeLargePizza()
+        {
+            this.large_pizza_counter -=  (this.large_pizza_counter > 0) ? 1 : 0;
+            this.paid = false;
+        },
+        getTotal()
+        {
+            return (this.small_pizza_counter*40.00)+(this.medium_pizza_counter*70.00)+(this.large_pizza_counter*120.00);
+        },
+        getTotalDisplay()
+        {
+            return Number(this.getTotal()).toFixed(2);
+        },
+
+        getSmallPizzaPrice()
+        {
+            return Number(this.small_pizza_counter*40.00).toFixed(2);
+        }, 
+        getMediumPizzaPrice()
+        {
+            return Number(this.medium_pizza_counter*70.00).toFixed(2);
+        }, 
+        getLargePizzaPrice()
+        {
+            return Number(this.large_pizza_counter*120.00).toFixed(2);
+        },
+
+        goCheckout()
+        {
+            this.isCheckout = this.getTotal() > 0 ? true : false;
+        },
+
+        calcChange()
+        {
+            try
+            {
+                let amount = Number(this.payAmount);
+                let change =amount - this.getTotal();
+
+                return change;
+
+            }
+            catch(e)
+            {
+
+            }
+            return 0;
+        },
+        getChange()
+        {
+            let change =this.calcChange();
+           
+            return change>0 ? Number(change).toFixed(2) :`0.00`;
+        },
+
+        payOrder()
+        {
+
+            if(this.calcChange()>0)
+            {
+                this.large_pizza_counter=0;
+                this.medium_pizza_counter=0;
+                this.small_pizza_counter=0;
+                this.total=0;
+                this.isCheckout=false;
+                this.payAmount=0;
+                this.paid=true;
+            }
+        },
+    }" class="container">
+
+        <div class="row">
+            <div class="col-3 small">
+                <h2>Small Pizza</h2>
+                <img class="pad" width=80
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8B7QYjxPmR5zAhljumo0stxmDqsY55puf1Q&usqp=CAU"
+                    alt="" s>
+                <p class="pad">
+                    R40.00 <br>
+                    Customise the pizza using the following ingredients chicken , Mushroom , Beef, Diced Tomato, Green
+                    Pepper, Jalapenos, Marinara Sauce, Mozzarella Cheese, Red Onion, Spring Onion
+                </p>
+                <button class="small center2 override_center" @click="addSmallPizza()">Add to order</button>
+
+            </div>
+            <div class="col-3 medium">
+                <h2>Medium Pizza</h2>
+                <img class="pad" width=125
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8B7QYjxPmR5zAhljumo0stxmDqsY55puf1Q&usqp=CAU"
+                    alt="">
+                <p class="pad">
+                    R70.00 <br>
+                    Customise the pizza using the following ingredients chicken , Mushroom , Beef, Diced Tomato, Green
+                    Pepper, Jalapenos, Marinara Sauce, Mozzarella Cheese, Red Onion, Spring Onion.
+                </p>
+                <button class="medium center2 override_center" @click="addMediumPizza()">Add to order</button>
+            </div>
+            <div class="col-3 large">
+                <h2>Large Pizza</h2>
+                <img class="pad" width=150
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8B7QYjxPmR5zAhljumo0stxmDqsY55puf1Q&usqp=CAU"
+                    alt="">
+                <p class="pad">
+                    R120.00 <br>
+                    Customise the pizza using the following ingredients chicken , Mushroom , Beef, Diced Tomato, Green
+                    Pepper, Jalapenos, Marinara Sauce, Onion. <br><br>
+                </p>
+                <button class="large center2 override_center" @click="addLargePizza()">Add to order</button>
+            </div>
+
+            <section class="col-3">
+                <h3 class="show card-title">Shopping Cart</h3>
+
+                <div x-show="(getTotal()>0 && !isCheckout)">
+
+
+                    <table id="clear-cart">
+                        <thead>
+                            <tr>
+                                <td>Pizza Size</td>
+                                <td>Quantity</td>
+                                <td>Price</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="small" x-show="small_pizza_counter>0">
+                                <td>Small Pizza</td>
+                                <td>
+                                    <button type="button" class="button" @click="addSmallPizza()">+</button>
+                                    <button type="button" class="button" @click="removeSmallPizza()">-</button>
+                                </td>
+                                <td>R<span class="small_pizza_price" x-text="getSmallPizzaPrice()">0.00</span></td>
+                            </tr>
+                            <tr id="medium" x-show="medium_pizza_counter>0">
+                                <td>Medium Pizza</td>
+                                <td>
+                                    <button type="button" class="button" @click="addMediumPizza()">+</button>
+                                    <button type="button" class="button" @click="removeMediumPizza()">-</button>
+                                </td>
+                                <td>R<span class="medium_pizza_price" x-text="getMediumPizzaPrice()">0.00</span></td>
+                            </tr>
+                            <tr id="large" x-show="large_pizza_counter>0">
+                                <td>Large Pizza</td>
+                                <td class="joinTags">
+                                    <button type="button" class="button" @click="addLargePizza()">+</button>
+                                    <button type="button" class="button" @click="removeLargePizza()">-</button>
+                                </td>
+                                <td>R<span class="large_pizza_price" x-text="getLargePizzaPrice()">0.00</span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="border-top:solid 2px maroon;">Total cost</td>
+
+                                <td style="border-top:solid 2px maroon;">R <span x-text="getTotalDisplay()"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="center2 checkout" @click="goCheckout()">Checkout</button>
+                </div>
+
+
+                <div x-show="getTotal()>0 && isCheckout">
+                    <div class=" theMessage red" x-show="getTotal() >payAmount">
+                        Not enough funds to complete order
+                    </div>
+                    <div class="space-between-elements payment">
+                        <div class="center-label pay">Payment
+                            amount: R<em x-text="getTotalDisplay()"></em></div>
+                        <div>Change: R<em x-text="getChange()"></em></div>
+
+                        <input type="text" name="pay" id="pay" class="cost" x-change x-model="payAmount">
+                        <button type="button" class="center2 checkout" @click="payOrder()">Complete Order</button>
+                    </div>
+                </div>
+
+                <div class=" theMessage" x-show="paid">
+                    Thank you! Thank you for buying monate pizza! Enjoy your pizzas
+                </div>
+
+            </section>
+
+        </div>
+    </div>
+
+    <footer>
+        <p style="color:white;font-weight: bolder;">
+            Contact : +27628361362 <br>
+            Email: Pebetsi.pizza@gmail.com
+
+        </p>
+    </footer>
+</body>
+
+
+</html>

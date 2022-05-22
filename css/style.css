@@ -1,0 +1,25 @@
+body {
+    background-color: #DCCCA3;
+}
+
+.small {
+    background-color: #ffab4967;
+}
+
+.medium {
+    background-color: #e2b6cf;
+}
+
+.large {
+    background-color: #90aa86;
+}
+
+footer {
+    background-color: #a04668;
+    text-align: center;
+}
+
+.pad {
+    padding-left: 1em;
+    padding-right: 1em;
+}
